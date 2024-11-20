@@ -21,3 +21,9 @@ v1.0.3
 * recent testing...  succesful use of bot with sql db was done with this code though some bugs definitely remain. Bugs are noted next to the functions. 
 """)
 print(version)
+
+
+#        TO BE ADDED: 
+* Py2exe
+* Exe Powershell management or restart process
+* Pretty Table the Sql results for show seedbank function.
