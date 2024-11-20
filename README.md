@@ -1,4 +1,4 @@
-# GreebleGardensBot-v1.0.3
+# GreebleGardensBot-v1.0.3-Beta
 version = str("""
 
         GREBBLE GARDENS LITE v1.0.3 Developed by: Raphael Ribeiro Dos Santos 11/9/2024
