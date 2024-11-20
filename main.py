@@ -56,14 +56,17 @@ create_db()
 
 
 # SQL COMMUNICATION ( USING WITH STATEMENTS TO AUTO CLOSE ONCE COMPLETE) 
-def get_seedbank(): #( NEEDS WORK - /WILL ONLY DISPLAY 1 ROW WHEN REQUESTED THROUGH THE BOT /)
+def get_seedbank(): #( UPDATED FIX, PENDING TEST - /WILL ONLY DISPLAY 1 ROW WHEN REQUESTED THROUGH THE BOT /)
     conn = sqlite3.connect('Garden_Scoreboard.db')
     with conn:
         cur = conn.cursor()
         query = cur.execute("SELECT * FROM Garden_Scoreboard ORDER BY seedscore DESC")
         rows = query.fetchall()
-        for row in rows:
-            return row
+	print("-- Grebble Gardens Seed Scoreboard -- \n")
+	for row in rows:
+		print(row)#SHOULD WORK TILL HERE
+		#return print(row)
+		return print(row) #NOT SURE WILL WORK
     print("Query results returned successfully")
     
 def add_player_to_db(username, seedscore): #( WORKS BUT DUPLICATES ENTRIES CAN BE MADE )
