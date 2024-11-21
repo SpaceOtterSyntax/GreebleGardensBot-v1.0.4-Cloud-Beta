@@ -26,14 +26,16 @@ import discord, os, random
 from discord.ext import commands
 from discord import app_commands
 import sqlite3
+from prettytable import from_db_cursor
+from prettytable import TableStyle
+
+
 
 #LOADING TOKEN METHOD: TBA 
 from dotenv import dotenv_values
 
 # GRAB VALID TOKEN
 token = dotenv_values(".env")["TOKEN"]
-
-
 
 #SERVER ID / GUILD ID ( CHANGE WHEN DEPLOYING FINAL )
 GUILD_ID = discord.Object(id=1299101271453732954)
@@ -56,18 +58,20 @@ create_db()
 
 
 # SQL COMMUNICATION ( USING WITH STATEMENTS TO AUTO CLOSE ONCE COMPLETE) 
-def get_seedbank(): #( UPDATED FIX, PENDING TEST - /WILL ONLY DISPLAY 1 ROW WHEN REQUESTED THROUGH THE BOT /)
+def get_seedbank(): #( FIXED / MORE FORMATTING NEEDED
     conn = sqlite3.connect('Garden_Scoreboard.db')
     with conn:
         cur = conn.cursor()
-        query = cur.execute("SELECT * FROM Garden_Scoreboard ORDER BY seedscore DESC")
-        rows = query.fetchall()
-	print("-- Grebble Gardens Seed Scoreboard -- \n")
-	for row in rows:
-		print(row)#SHOULD WORK TILL HERE
-		#return print(row)
-		return print(row) #NOT SURE WILL WORK
-    print("Query results returned successfully")
+        cur.execute("SELECT username, seedscore FROM Garden_Scoreboard ORDER BY seedscore DESC")
+        mytable = from_db_cursor(cur)
+        mytable.align["username"] = "l"  # Align left
+        mytable.align["seedscore"] = "c"  # Align right)
+        mytable.set_style(TableStyle.PLAIN_COLUMNS)
+        mytable.border = True
+        mytable.left_padding_width = 5
+        mytable.right_padding_width = 5
+        return mytable
+
     
 def add_player_to_db(username, seedscore): #( WORKS BUT DUPLICATES ENTRIES CAN BE MADE )
     try:
