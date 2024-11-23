@@ -2,22 +2,18 @@ version = str("""
 
         GREBBLE GARDENS LITE v1.0.3 Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
-Version changes:
+Version changes: 
+v1.0.3 - First Database Edition
+* BIG UPDATE: functional use of bot with sql db was done with this code though, some bugs remain. Bugs are noted next to the functions. 
+    - Database is created on launch and checked if existing on subsequent uses. 
+    - Tested Adding player, updating player score, and retriving current score from database. 
+    - Database read/write functions to local txt files are backup files created as temp local storage in case of db corruption or bot crash.
 
-v1.0.2
-* Added list of premade phrases to randomly respond to 'garden' input from user.
-* Added random import module and created function to retried random phrase from txt file 'GardenPhrases'.
-* Changed Repsone and Format from bot when correct input of the stored keyword in 'Phrase.txt' is given.
-* Added Function to check prize status or create txt file: 
-    Funciton also limits how many times a user claims the prize to 1x by checking if the prize is 'claimed' or 'unclaimed'.
-* Sanitized input to accept anycase from user and convert to lower case.
+* Added function/Solution for bug - a write fx was needed to create initial Phrase.txt, Updated_Scoreboard.txt or other txt file that would error on first launch of the app. 
+    -minor bug: Phrase txt file created and default phrase set to: NOT SET. but can not be read on initial start with "NOT SET". user must enter the first phrase with slash command.)
+    -fixed bug that could not find Phrase.txt file on first use and would error program in terminal. ( refer to the above change )
 
-v1.0.3
-* Added function to create initial Phrase.txt that would error on first launch. 
-    -(minor bug exist: Phrase txt file created and default phrase set to: NOT SET. but can not be read on initial start with "NOT SET". user must enter the first phrase with slash command.)
-    -Fixed bug that could not find Phrase.txt file on first use and would error program in terminal. ( refer to the above change )
-* DOT ENV is fuuuuuuked ( bug ) 
-* recent testing...  succesful use of bot with sql db was done with this code though some bugs definitely remain. Bugs are noted next to the functions. 
+* DOT ENV is dorked ( BIG BUG ) 
 """)
 print(version)
 
@@ -62,16 +58,11 @@ def get_seedbank(): #( FIXED / MORE FORMATTING NEEDED
     conn = sqlite3.connect('Garden_Scoreboard.db')
     with conn:
         cur = conn.cursor()
-        cur.execute("SELECT username, seedscore FROM Garden_Scoreboard ORDER BY seedscore DESC")
+        cur.execute("SELECT * FROM Garden_Scoreboard ORDER BY seedscore DESC")
         mytable = from_db_cursor(cur)
-        mytable.align["username"] = "l"  # Align left
-        mytable.align["seedscore"] = "c"  # Align right)
-        mytable.set_style(TableStyle.PLAIN_COLUMNS)
-        mytable.border = True
-        mytable.left_padding_width = 5
-        mytable.right_padding_width = 5
-        return mytable
-
+        with open('updated_scoreboard.txt','w') as file: file.write(mytable.get_formatted_string(fields=['username','seedscore']))
+        with open('updated_scoreboard.txt','r') as file: content = file.read()
+        return content
     
 def add_player_to_db(username, seedscore): #( WORKS BUT DUPLICATES ENTRIES CAN BE MADE )
     try:
@@ -114,7 +105,6 @@ def writetotxt(phrase):
         with open('Oldlist.txt','a') as file:
             file.write(phrase + ', \n')
        
-
 #BOT READ THE PHRASE FROM TXT FILE
 def open_phrase():
     try:
