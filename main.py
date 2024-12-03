@@ -1,24 +1,28 @@
 version = str("""
 
-        GREBBLE GARDENS LITE v1.0.3 Developed by: Raphael Ribeiro Dos Santos 11/9/2024
+        ** GREEBLE GARDENS LITE **s__v1.0.4 __
+        Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
 Version changes: 
-v1.0.3 - First Database Edition
-* BIG UPDATE: functional use of bot with sql db was done with this code though, some bugs remain. Bugs are noted next to the functions. 
-    - Database is created on launch and checked if existing on subsequent uses. 
-    - Tested Adding player, updating player score, and retriving current score from database. 
-    - Database read/write functions to local txt files are backup files created as temp local storage in case of db corruption or bot crash.
+v1.0.4 - Database Edition v2
+* MAJOR: 
+    - Function Added = get_myseedb 
+    - Slash Command = # SLASH COMMAND /MYSEEDBANK
+    - Added Listener Event = startswith 'bert' listener for user interactions
+* minor:
+    - Some minor spellchecking and updated text language
 
-* Added function/Solution for bug - a write fx was needed to create initial Phrase.txt, Updated_Scoreboard.txt or other txt file that would error on first launch of the app. 
-    -minor bug: Phrase txt file created and default phrase set to: NOT SET. but can not be read on initial start with "NOT SET". user must enter the first phrase with slash command.)
-    -fixed bug that could not find Phrase.txt file on first use and would error program in terminal. ( refer to the above change )
-
-* DOT ENV is dorked ( BIG BUG ) 
+* Known BUGS:
+    - DOT ENV is dorked ( BIG BUG )
+    - Duplicates from entering players possible!
+* TESTS: 
+    - NEED TEST
 """)
 print(version)
 
 #IMPORT NEEDED PACKAGED FOR PYTHON + DISCORD BOT
-import discord, os, random
+import discord, os
+import random
 from discord.ext import commands
 from discord import app_commands
 import sqlite3
@@ -36,17 +40,15 @@ token = dotenv_values(".env")["TOKEN"]
 #SERVER ID / GUILD ID ( CHANGE WHEN DEPLOYING FINAL )
 GUILD_ID = discord.Object(id=1299101271453732954)
 
-#############################################################################################
-####            SECTION BELOW UNDER CONSTRUCTION > SQL INTERACTION FUNCTIONS         ####  
-#############################################################################################
+
 #CREATE TABLE IF NOT EXIST
-#CREATE DB IF NOT EXIST ( WORKS )
+#CREATE DB IF NOT EXIST
 def create_db():
     try:
         conn = sqlite3.connect('Garden_Scoreboard.db')
         with conn:
             cur = conn.cursor()
-            cur.execute(f'''CREATE TABLE IF NOT EXISTS Garden_Scoreboard (username,seedscore)'''), print("found table or table was crated")
+            cur.execute(f'''CREATE TABLE IF NOT EXISTS Garden_Scoreboard (username, gc_username, seedscore)'''), print("found table or table was crated")
             conn.commit(), print("Commit sent, CREATE DB IF NOT EXIST = Garden_Scoreboard\n")
     except sqlite3.Error as error:
         print(f"whoops an ERROR OCCURED:{error}")
@@ -54,29 +56,42 @@ create_db()
 
 
 # SQL COMMUNICATION ( USING WITH STATEMENTS TO AUTO CLOSE ONCE COMPLETE) 
-def get_seedbank(): #( FIXED / MORE FORMATTING NEEDED
+def get_seedbank():
     conn = sqlite3.connect('Garden_Scoreboard.db')
     with conn:
         cur = conn.cursor()
-        cur.execute("SELECT * FROM Garden_Scoreboard ORDER BY seedscore DESC")
+        cur.execute("SELECT * FROM Garden_Scoreboard ORDER BY seedscore DESC;")
         mytable = from_db_cursor(cur)
-        with open('updated_scoreboard.txt','w') as file: file.write(mytable.get_formatted_string(fields=['username','seedscore']))
+        with open('updated_scoreboard.txt','w') as file: file.write(mytable.get_string(fields=['username','gc_username','seedscore']))
         with open('updated_scoreboard.txt','r') as file: content = file.read()
         return content
+
+#PERSONAL SEED BANK FUNCTION 
+def get_myseedbank(username): #( NEWEST )
+    conn = sqlite3.connect('Garden_Scoreboard.db')
+    with conn:
+        user = username
+        cur = conn.cursor()
+        query = str("SELECT username, gc_username, seedscore FROM Garden_Scoreboard WHERE username LIKE ?")
+        cur.execute(query,(user,))
+        mytable = from_db_cursor(cur)
+        mytable.align = 'c'
+        content = mytable.get_string(fields=['username','gc_username','seedscore'])
+        return content
     
-def add_player_to_db(username, seedscore): #( WORKS BUT DUPLICATES ENTRIES CAN BE MADE )
+def add_player_to_db(username,grundos_username,seedscore): #( WORKS BUT DUPLICATES ENTRIES CAN BE MADE )
     try:
         conn = sqlite3.connect('Garden_Scoreboard.db')
         with conn:
             cur = conn.cursor()
-            sql_values = (username, seedscore)
-            sql_query = str("""INSERT INTO Garden_Scoreboard (username, seedscore) VALUES(?, ?)""")
+            sql_values = (username,grundos_username,seedscore)
+            sql_query = str("""INSERT INTO Garden_Scoreboard (username, gc_username, seedscore) VALUES(?, ?, ?)""")
             cur.execute(sql_query, sql_values)
             conn.commit()
     except sqlite3.Error as error:
 		    print("Failed to insert info into database, ERROR HERE ->:",error)
 
-def update_seedscore(username, seedscore): #( NOT TESTED )
+def update_seedscore(username, seedscore): #( works, dupes? )
     try:
         conn = sqlite3.connect('Garden_Scoreboard.db')
         with conn:
@@ -87,9 +102,7 @@ def update_seedscore(username, seedscore): #( NOT TESTED )
             conn.commit()
     except sqlite3.Error as error:
         print("Failed to update scoreboard, see error", error)
-#############################################################################################
-####            SECTION ABOVE UNDER CONSTRUCTION > SQL INTERACTION FUNCTION         ####  
-#############################################################################################
+
 
 # PHRASE OF THE DAY FUNCTIONS
 file_path = "Phrase.txt"
@@ -163,19 +176,23 @@ class Client(commands.Bot):
         prize_stat = prize_status() 
         phrase = str(open_phrase())
         GardenPhrases = str(Random_Garden_Phrases())
-                
         if message.author == self.user:
             return
         elif prize_stat == 'claimed' and message.content.lower() == (f"!{phrase}"):
             await message.channel.send(f'''Sorry, But there is no quest at this time...''')
+        
         elif prize_stat == 'unclaimed' and message.content.lower() == (f"!{phrase}"):
             print(f"a user has found the keyword")
             writeprizestatus('claimed')
             await message.channel.send(f'''**Congratulations**, **{message.author}**! \n It seems you've solved Thoughts' riddle and uncovered the secret phrase. Can you guess what happens next? Go and fetch what the elusive Draik seeks and return it to his lair, if you've been successful you'll receive something worth your time... You have three days. _Fetch the item that was the secret phrase and send it to Quill to receive your reward! If you don't complete the quest in time, it will silently reset. Good luck!_ \n Don't know what you're looking at? Go here: _https://www.grundos.cafe/~Thoughts/_''')
+        
         elif message.content.startswith(('garden','Garden','GARDEN')):
-            await message.channel.send(f"{GardenPhrases}")
+            await message.channel.send(f"{GardenPhrases}") 
+
+        elif message.content.startswith(('bert','BERT','hey bert','hey BERT')):
+            await message.channel.send(f'{GardenPhrases}')
         else: 
-            print(f"Else happened here... Bot misunderstood or ignored input.")
+            print(f"On Message: Else happened here...Bot misunderstood or ignored input.")
             return 
 
 # SETUP TO RUN THE CLIENT
@@ -183,10 +200,9 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = Client(command_prefix="!", intents=intents)
 
-#############################################################################################
+#####################################################################
 #### SLASH COMMANDS ####
-#############################################################################################
-
+#####################################################################
 #SLASH COMMAND /SAY HELLO
 @client.tree.command(name="hello", description="say hello!", guild=GUILD_ID)
 async def sayHello(interaction: discord.Interaction, user: discord.Member):
@@ -199,27 +215,36 @@ async def setphrase(interaction: discord.Interaction, phrase: str):
     writeprizestatus('unclaimed')
     await interaction.response.send_message(f"You have set the challenge phrase to: !{phrase}, and quest has been reset.")
 
-#############################################################################################
-####            SECTION BELOW UNDER CONSTRUCTION > SQL INTERACTION COMMANDS         ####  
-#############################################################################################
+#####################################################################
+####            SECTION BELOW > SQL INTERACTION COMMANDS         ####  
+#####################################################################
 # SLASH COMMAND /SEEDBANK
-@client.tree.command(name="seedbank", description="Show current Garden seeds Scoreboard", guild=GUILD_ID)
+@client.tree.command(name="seedbank", description="Show current Garden Seedbank", guild=GUILD_ID)
 async def seedbank(interaction: discord.Interaction):
     try:
         results = get_seedbank()
-        await interaction.response.send_message(f"-- Grebble Gardens Seed Scoreboard -- \n {results}")
+        await interaction.response.send_message(f"-- Greeble Gardens Seedbank -- \n {results}")
+    except ValueError as e:
+        return e
+
+# SLASH COMMAND /MYSEEDBANK
+@client.tree.command(name="myseedbank", description="Show personal current Garden Seeds Score", guild=GUILD_ID)
+async def myseedbank(interaction: discord.Interaction, user: discord.Member):
+    username = str(user)
+    try:
+        results = get_myseedbank(username)
+        await interaction.response.send_message(f"\n\n your seed count is...\n {results}")
     except ValueError as e:
         return e
 
 # SLASH COMMAND /INSERT PLAYER AND SCORE ( USERNAME + AMOUNT )
 @client.tree.command(name="add_player", description="Adds new player to the scoreboard by username.", guild=GUILD_ID)
-async def add_player(interaction: discord.Interaction, user: discord.Member, add_seedscore: int):
+async def add_player(interaction: discord.Interaction, user: discord.Member, gc_username: str, add_seedscore: int):
     username = str(user)
+    grundos_username = str(gc_username)
     seedscore = add_seedscore
-    add_player_to_db(username, seedscore)
-    await interaction.response.send_message(f"You have requested to add a player and give em my seeds! \n {username} has been added and given {seedscore} seeds.")
-
-
+    add_player_to_db(username, grundos_username, seedscore)
+    await interaction.response.send_message(f"You have requested to add a player and give them my seeds! \n Discord:  {username}\n GC USERNAME:  **{grundos_username}** \n has been added and given **{seedscore} SEEDS!**.")
 
 @client.tree.command(name="update_player_score", description="Updates the players seedscore by username and score to be updated", guild=GUILD_ID)
 async def update_score(interaction: discord.Interaction, user: discord.Member, updtd_seedscore: int):
@@ -227,9 +252,6 @@ async def update_score(interaction: discord.Interaction, user: discord.Member, u
     seedscore = updtd_seedscore
     update_seedscore(username, seedscore)
     await interaction.response.send_message(f"You have updated {username}'s seedscore to {seedscore}")
-#############################################################################################
-####            SECTION ABOVE UNDER CONSTRUCTION > SQL INTERACTION COMMANDS         ####
-#############################################################################################
 
 # RUNNING THE CLIENT USING DOT ENV
 client.run(token)
