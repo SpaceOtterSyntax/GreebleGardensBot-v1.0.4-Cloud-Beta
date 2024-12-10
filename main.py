@@ -30,13 +30,21 @@ import sqlite3
 from prettytable import from_db_cursor
 from prettytable import TableStyle
 
-
-
-#LOADING TOKEN METHOD: TBA 
-from dotenv import dotenv_values
+print(f"YOUR LOCATION:",os.getcwd(),'\n')
+os.chdir(r'C:/ProgramData/GrebbleGardensBot')
+path = r'C:/ProgramData/GrebbleGardensBot'
 
 # GRAB VALID TOKEN
-token = dotenv_values(".env")["TOKEN"]
+file_path = 'env.txt'
+def gettoken():
+    with open('env.txt','r')as file:
+        content = file.read()
+        content = str(content[6:])
+        return content
+token = (gettoken())
+
+print(f"YOUR LOCATION:",os.getcwd(),'\n')
+print("bot token is valid, bot loading...")
 
 #SERVER ID / GUILD ID ( CHANGE WHEN DEPLOYING FINAL )
 GUILD_ID = discord.Object(id=1273447123001671721)
@@ -256,3 +264,4 @@ async def update_score(interaction: discord.Interaction, user: discord.Member, u
 
 # RUNNING THE CLIENT USING DOT ENV
 client.run(token)
+
