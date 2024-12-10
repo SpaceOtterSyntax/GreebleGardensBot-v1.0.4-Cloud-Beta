@@ -1,6 +1,6 @@
 version = str("""
 
-        ** GREEBLE GARDENS LITE **s__v1.0.4 __
+        ** GREEBLE GARDENS LITE **__v1.0.4__
         Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
 Version changes: 
@@ -9,6 +9,7 @@ v1.0.4 - Database Edition v2
     - Function Added = get_myseedb 
     - Slash Command = # SLASH COMMAND /MYSEEDBANK
     - Added Listener Event = startswith 'bert' listener for user interactions
+    - Scoreboard format fixed!
 * minor:
     - Some minor spellchecking and updated text language
 
@@ -38,7 +39,7 @@ from dotenv import dotenv_values
 token = dotenv_values(".env")["TOKEN"]
 
 #SERVER ID / GUILD ID ( CHANGE WHEN DEPLOYING FINAL )
-GUILD_ID = discord.Object(id=1299101271453732954)
+GUILD_ID = discord.Object(id=1273447123001671721)
 
 
 #CREATE TABLE IF NOT EXIST
@@ -91,7 +92,7 @@ def add_player_to_db(username,grundos_username,seedscore): #( WORKS BUT DUPLICAT
     except sqlite3.Error as error:
 		    print("Failed to insert info into database, ERROR HERE ->:",error)
 
-def update_seedscore(username, seedscore): #( works, dupes? )
+def update_seedscore(username, seedscore): #( works, will update dupes but will not create dupes. )
     try:
         conn = sqlite3.connect('Garden_Scoreboard.db')
         with conn:
@@ -165,7 +166,7 @@ class Client(commands.Bot):
         print(f'''Bot Ready''')
         # VERIFY SLASH COMMANDS ARE UPDATED ON LAUNCH
         try:
-            guild = discord.Object(id=1299101271453732954)
+            guild = discord.Object(id=1273447123001671721)
             synced = await self.tree.sync(guild=guild)
             print(f'Synched {len(synced)} commands to your guild {guild.id}')
         except Exception as e:
@@ -189,7 +190,7 @@ class Client(commands.Bot):
         elif message.content.startswith(('garden','Garden','GARDEN')):
             await message.channel.send(f"{GardenPhrases}") 
 
-        elif message.content.startswith(('bert','BERT','hey bert','hey BERT')):
+        elif message.content.startswith(('bert','BERT','hey bert','HEY BERT')):
             await message.channel.send(f'{GardenPhrases}')
         else: 
             print(f"On Message: Else happened here...Bot misunderstood or ignored input.")
@@ -201,7 +202,7 @@ intents.message_content = True
 client = Client(command_prefix="!", intents=intents)
 
 #####################################################################
-#### SLASH COMMANDS ####
+#### STANDARD SLASH COMMANDS ####
 #####################################################################
 #SLASH COMMAND /SAY HELLO
 @client.tree.command(name="hello", description="say hello!", guild=GUILD_ID)
@@ -223,7 +224,7 @@ async def setphrase(interaction: discord.Interaction, phrase: str):
 async def seedbank(interaction: discord.Interaction):
     try:
         results = get_seedbank()
-        await interaction.response.send_message(f"-- Greeble Gardens Seedbank -- \n {results}")
+        await interaction.response.send_message(f"-- Greeble Gardens Seedbank -- \n```{results}```\n")
     except ValueError as e:
         return e
 
@@ -233,11 +234,11 @@ async def myseedbank(interaction: discord.Interaction, user: discord.Member):
     username = str(user)
     try:
         results = get_myseedbank(username)
-        await interaction.response.send_message(f"\n\n your seed count is...\n {results}")
+        await interaction.response.send_message(f"\n\n your seed count is...\n```{results}```")
     except ValueError as e:
         return e
 
-# SLASH COMMAND /INSERT PLAYER AND SCORE ( USERNAME + AMOUNT )
+# SLASH COMMAND /INSERT PLAYER AND SCORE ( USERNAME + GC USERNAME + AMOUNT )
 @client.tree.command(name="add_player", description="Adds new player to the scoreboard by username.", guild=GUILD_ID)
 async def add_player(interaction: discord.Interaction, user: discord.Member, gc_username: str, add_seedscore: int):
     username = str(user)
