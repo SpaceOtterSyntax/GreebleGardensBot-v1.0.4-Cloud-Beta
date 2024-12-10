@@ -198,7 +198,7 @@ class Client(commands.Bot):
         elif message.content.startswith(('garden','Garden','GARDEN')):
             await message.channel.send(f"{GardenPhrases}") 
 
-        elif message.content.startswith(('bert','BERT','hey bert','HEY BERT')):
+        elif message.content.startswith(('bert','BERT','hey bert','HEY BERT','yo bert','YO BERT','Yo Bert','Hi Bert','HI BERT','Hi bert','hi bert','hi Bert','Hi bert')):
             await message.channel.send(f'{GardenPhrases}')
         else: 
             print(f"On Message: Else happened here...Bot misunderstood or ignored input.")
