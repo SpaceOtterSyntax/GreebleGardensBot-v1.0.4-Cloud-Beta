@@ -1,6 +1,7 @@
 # GreebleGardensBot-v1.0.4-Beta
 
-        GREBBLE GARDENS LITE v1.0.3 Developed by: Raphael Ribeiro Dos Santos 11/9/2024
+                GREBBLE GARDENS LITE v1.0.4 
+        Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
 Version changes:
 v1.0.2
