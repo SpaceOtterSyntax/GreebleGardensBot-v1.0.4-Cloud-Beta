@@ -38,12 +38,15 @@ ssm = boto3.client("ssm", region_name="us-east-2")  # Change region if needed
 response = ssm.get_parameter(Name="/discord/bot/token", WithDecryption=True)
 TOKEN = response["Parameter"]["Value"]
 
+if not TOKEN:
+    raise ValueError("Discord bot token is missing!")
+if TOKEN:
+	print("bot token is valid, bot loading...")
+	
 print(f"YOUR LOCATION:",os.getcwd(),'\n')
-print("bot token is valid, bot loading...")
 
 # SERVER ID / GUILD ID ( CHANGE WHEN DEPLOYING FINAL )
 GUILD_ID = discord.Object(id=1273447123001671721)
-
 
 # CREATE TABLE DB IF NOT EXIST
 def create_db():
