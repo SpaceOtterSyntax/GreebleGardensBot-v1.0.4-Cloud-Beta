@@ -1,5 +1,4 @@
-# GreebleGardensBot-v1.0.3-Beta
-version = str("""
+# GreebleGardensBot-v1.0.4-Beta
 
         GREBBLE GARDENS LITE v1.0.3 Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
@@ -17,5 +16,3 @@ v1.0.3
     -(minor bug exist: Phrase txt file created and default phrase set to: NOT SET. but can not be read on initial start with "NOT SET". user must enter the first phrase with slash command.)
     -Fixed bug that could not find Phrase.txt file on first use and would error program in terminal. ( refer to the above change )
 * DOT ENV is fuuuuuuked ( bug )
-""")
-print(version)
