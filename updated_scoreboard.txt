@@ -1,0 +1,20 @@
++---------------------+---------------------+-----------+
+|       username      |     gc_username     | seedscore |
++---------------------+---------------------+-----------+
+|      socks9143      |        sugoi        |     49    |
+|      giga_pony      |       gigapony      |     35    |
+|     lissacafe007    |     lissacafe007    |     24    |
+|       notyoum8      |        Chosen       |     15    |
+|     ribbi_roona     |     phanazulluna    |    143    |
+|       carbylis      |        Celebi       |     12    |
+| dangeroustangerines | DangerousTangerines |     10    |
+|       .mature.      |        mature       |    314    |
+|    northernriver    |        River        |    243    |
+|    stressxcookies   |    StressxCookies   |    198    |
+|   catpettingparty   |        Quill        |    166    |
+|      venge2187      |        enter        |    145    |
+|    valforvaleous    |        Usopp        |    145    |
+|      mekermeker     |        meker        |    134    |
+|      nopeghost_     |      MochiMelon     |    100    |
+|      nanner1120     |        Nanner       |     10    |
++---------------------+---------------------+-----------+
