@@ -12,16 +12,12 @@ v1.0.4 - Database Edition v2
     - Scoreboard format fixed!
 * minor:
     - Some minor spellchecking and updated text language
-
 * Known BUGS:
-    - DOT ENV is dorked ( BIG BUG )
     - Duplicates from entering players possible!
-* TESTS: 
-    - NEED TEST
 """)
 print(version)
 
-#IMPORT NEEDED PACKAGED FOR PYTHON + DISCORD BOT
+# IMPORT NEEDED PACKAGED FOR PYTHON + DISCORD BOT
 import discord, os
 import random
 from discord.ext import commands
@@ -46,12 +42,11 @@ token = (gettoken())
 print(f"YOUR LOCATION:",os.getcwd(),'\n')
 print("bot token is valid, bot loading...")
 
-#SERVER ID / GUILD ID ( CHANGE WHEN DEPLOYING FINAL )
+# SERVER ID / GUILD ID ( CHANGE WHEN DEPLOYING FINAL )
 GUILD_ID = discord.Object(id=1273447123001671721)
 
 
-#CREATE TABLE IF NOT EXIST
-#CREATE DB IF NOT EXIST
+# CREATE TABLE DB IF NOT EXIST
 def create_db():
     try:
         conn = sqlite3.connect('Garden_Scoreboard.db')
@@ -62,7 +57,6 @@ def create_db():
     except sqlite3.Error as error:
         print(f"whoops an ERROR OCCURED:{error}")
 create_db()
-
 
 # SQL COMMUNICATION ( USING WITH STATEMENTS TO AUTO CLOSE ONCE COMPLETE) 
 def get_seedbank():
@@ -75,7 +69,7 @@ def get_seedbank():
         with open('updated_scoreboard.txt','r') as file: content = file.read()
         return content
 
-#PERSONAL SEED BANK FUNCTION 
+# PERSONAL SEED BANK FUNCTION 
 def get_myseedbank(username): #( NEWEST )
     conn = sqlite3.connect('Garden_Scoreboard.db')
     with conn:
@@ -120,14 +114,14 @@ if not os.path.exists(file_path):
         file.write('NOTSET')
         print(f"created Phrase.txt file..")
 
-#BOT TO SET THE PHRASE INTO TXT FILE
+# BOT TO SET THE PHRASE INTO TXT FILE
 def writetotxt(phrase):
         with open('Phrase.txt','w') as file:
             file.write(phrase.lower())
         with open('Oldlist.txt','a') as file:
             file.write(phrase + ', \n')
        
-#BOT READ THE PHRASE FROM TXT FILE
+# BOT READ THE PHRASE FROM TXT FILE
 def open_phrase():
     try:
         with open('Phrase.txt','r') as file:
@@ -136,7 +130,7 @@ def open_phrase():
     except IOError as e:
         print(e)
 
-#GETTING PRIZE STATUS AND WRITING OVER PREV STATUS
+# GETTING PRIZE STATUS AND WRITING OVER PREV STATUS
 file_path = 'Prize_Status.txt'
 def writeprizestatus(str):
     with open('Prize_Status.txt','w') as file:
