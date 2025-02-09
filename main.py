@@ -23,7 +23,7 @@ from discord.ext import commands
 from discord import app_commands
 import sqlite3
 from prettytable import from_db_cursor
-from prettytable import TableStyle
+
 
 # GRAB VALID TOKEN
 import boto3
