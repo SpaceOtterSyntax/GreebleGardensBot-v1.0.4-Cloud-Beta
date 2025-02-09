@@ -25,10 +25,6 @@ import sqlite3
 from prettytable import from_db_cursor
 from prettytable import TableStyle
 
-print(f"YOUR LOCATION:",os.getcwd(),'\n')
-os.chdir(r'C:/ProgramData/GrebbleGardensBot')
-path = r'C:/ProgramData/GrebbleGardensBot'
-
 # GRAB VALID TOKEN
 import boto3
 #   AWS SSM Client
