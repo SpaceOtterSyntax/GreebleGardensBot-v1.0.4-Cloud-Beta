@@ -1,5 +1,4 @@
 version = str("""
-
         ** GREEBLE GARDENS LITE **__v1.0.4__
         Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
@@ -31,13 +30,13 @@ os.chdir(r'C:/ProgramData/GrebbleGardensBot')
 path = r'C:/ProgramData/GrebbleGardensBot'
 
 # GRAB VALID TOKEN
-file_path = 'env.txt'
-def gettoken():
-    with open('env.txt','r')as file:
-        content = file.read()
-        content = str(content[6:])
-        return content
-token = (gettoken())
+import boto3
+#   AWS SSM Client
+ssm = boto3.client("ssm", region_name="us-east-2")  # Change region if needed
+
+# Retrieve the bot token from Parameter Store
+response = ssm.get_parameter(Name="/discord/bot/token", WithDecryption=True)
+TOKEN = response["Parameter"]["Value"]
 
 print(f"YOUR LOCATION:",os.getcwd(),'\n')
 print("bot token is valid, bot loading...")
@@ -257,4 +256,4 @@ async def update_score(interaction: discord.Interaction, user: discord.Member, u
     await interaction.response.send_message(f"You have updated {username}'s seedscore to {seedscore}")
 
 # RUNNING THE CLIENT USING DOT ENV
-client.run(token)
+client.run(TOKEN)
