@@ -1,15 +1,22 @@
-# Greeble-Gardens-Bot-v1.0.4-Beta
+# Greeble-Gardens-Bot-v1.0.4-Cloud-Beta
 
-                GREBBLE GARDENS LITE v1.0.4-Beta 
+                GREBBLE GARDENS LITE v1.0.4-Cloud-Beta
         Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
 Version changes: 
 
-v1.0.4-Beta BIG UPDATE!
+v1.0.4-Cloud-Beta BIG UPDATE!
 * Replaced DOT ENV for token mangmnt - DOTENV was bugged for me, replaced with aws parameter store to secure string on the cloud.
 * Uploaded code to aws platform for 24/7 use! 
 * Changed Token auth to integrate with aws ec2 services.
 * Removed import fx for PrettyTables -> TableStyle
+
+* v1.0.4 - Database Edition v2
+* MAJOR: 
+    - Function Added = get_myseedb 
+    - Slash Command = # SLASH COMMAND /MYSEEDBANK
+    - Added Listener Event = startswith 'bert' listener for user interactions
+    - Scoreboard format fixed!
 
 v1.0.3
 * Added function to create initial Phrase.txt that would error on first launch. 
