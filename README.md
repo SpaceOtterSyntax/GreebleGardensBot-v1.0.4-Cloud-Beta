@@ -10,10 +10,12 @@ BIG UPDATE!
 * Uploaded code to aws platform for 24/7 use! 
 * Changed Token auth to integrate with aws ec2 services.
 * Removed import fx for PrettyTables -> TableStyle
+
 v1.0.3
 * Added function to create initial Phrase.txt that would error on first launch. 
     -(minor bug exist: Phrase txt file created and default phrase set to: NOT SET. but can not be read on initial start with "NOT SET". user must enter the first phrase with slash command.)
     -Fixed bug that could not find Phrase.txt file on first use and would error program in terminal. ( refer to the above change )
+
 v1.0.2
 * Added list of premade phrases to randomly respond to 'garden' input from user.
 * Added random import module and created function to retried random phrase from txt file 'GardenPhrases'.
