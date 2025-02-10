@@ -9,10 +9,6 @@ v1.0.4 - Database Edition v2
     - Slash Command = # SLASH COMMAND /MYSEEDBANK
     - Added Listener Event = startswith 'bert' listener for user interactions
     - Scoreboard format fixed!
-* minor:
-    - Some minor spellchecking and updated text language
-* Known BUGS:
-    - Duplicates from entering players possible!
 """)
 print(version)
 
