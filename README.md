@@ -4,6 +4,7 @@
         Developed by: Raphael Ribeiro Dos Santos 11/9/2024
 
 Version changes: 
+
 v1.0.4-Beta BIG UPDATE!
 * Replaced DOT ENV for token mangmnt - DOTENV was bugged for me, replaced with aws parameter store to secure string on the cloud.
 * Uploaded code to aws platform for 24/7 use! 
